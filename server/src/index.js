@@ -2,7 +2,7 @@ import cookieParser from "cookie-parser";
 import express from "express";
 import cors from "cors";
 import userRouter from "./routes/user.route.js";
-
+import "dotenv/config";
 const app = express();
 
 // middlewares
@@ -16,7 +16,7 @@ app.use(
 );
 
 // Routes
-app.use("/api/v2",userRouter);
+app.use("/api/v2", userRouter);
 
 // test api
 app.get("/", (req, res) => {
