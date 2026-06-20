@@ -30,7 +30,7 @@ export const registerUser = async (req, res) => {
       avatar,
     });
 
-    let token = generateToken(user._id);
+    let token = await generateToken(user._id);
 
     res.cookie("token", token, {
       httpOnly: true,
@@ -84,7 +84,7 @@ export const loginUser = async (req, res) => {
       });
     }
 
-    let token = generateToken(existingUser._id);
+    let token = await generateToken(existingUser._id);
 
     res.cookie("token", token, {
       httpOnly: true,
@@ -119,6 +119,91 @@ export const logoutUser = async (req, res) => {
       message: "Error occurred in logout api.",
       success: false,
       error,
+    });
+  }
+};
+
+export const googleLogin = async (req, res) => {
+  try {
+    const { email, fullName, avatar } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is required",
+      });
+    }
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      user = await User.create({
+        fullName,
+        email,
+        avatar,
+        password: null,
+      });
+    }
+
+    const token = await generateToken(user._id);
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Google login successful",
+      user: {
+        _id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        avatar: user.avatar,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Google login failed",
+      error: error.message,
+    });
+  }
+};
+
+export const getCurrentUser = async (req, res) => {
+  try {
+    const id = req.user;
+
+    if (!id) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized access",
+      });
+    }
+
+    const user = await User.findById(id).select("-password");
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "User fetched successfully",
+      user,
+    });
+    
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error fetching current user",
+      error: error.message,
     });
   }
 };
