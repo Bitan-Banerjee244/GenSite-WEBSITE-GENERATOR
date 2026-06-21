@@ -3,6 +3,7 @@ import express from "express";
 import cors from "cors";
 import userRouter from "./routes/user.route.js";
 import "dotenv/config";
+import websiteRouter from "./routes/website.route.js";
 const app = express();
 
 // middlewares
@@ -17,6 +18,7 @@ app.use(
 
 // Routes
 app.use("/api/v2", userRouter);
+app.use("/api/web",websiteRouter);
 
 // test api
 app.get("/", (req, res) => {
