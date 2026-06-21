@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Coins } from "lucide-react";
+import { useSelector } from "react-redux";
 
 function Nav({ setOpen, setOpenSignUp }) {
   // Hooks
-  const [user,setUser] = useState(false);
+  const user = useSelector((store) => store.user.userData);
 
   return (
     <nav className="w-full h-14 z-50 bg-black text-white fixed top-0 left-0 border-b border-gray-800">
@@ -39,8 +40,18 @@ function Nav({ setOpen, setOpenSignUp }) {
             </>
           )}
 
-          {user && (
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-800 border border-gray-700"></div>
+        
+          {user && user?.avatar == "" && (
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-800 border border-gray-700 flex justify-center items-center cursor-pointer">
+              {user?.fullName[0]}
+            </div>
+          )}
+
+          {user && user?.avatar != "" && (
+            <img
+              className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-800 border border-gray-700 flex justify-center items-center cursor-pointer"
+              src={user?.avatar}
+            />
           )}
         </div>
       </div>

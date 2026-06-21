@@ -5,6 +5,8 @@ import axios from "axios";
 import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { setUserData } from "../store/user/userSlice";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { auth } from "../auth/auth";
 
 function Signup({ setOpenSignUp }) {
   // Hooks && Variables
@@ -34,6 +36,31 @@ function Signup({ setOpenSignUp }) {
     } catch (error) {
       console.log(error);
       toast.error(error?.response?.data?.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const googleLoginUser = async () => {
+    try {
+      setLoading(true);
+      let provider = new GoogleAuthProvider();
+      let firebaseResponse = await signInWithPopup(auth, provider);
+
+      let response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/v2/google`,
+        {
+          fullName: firebaseResponse?.user?.displayName,
+          email: firebaseResponse?.user?.email,
+          avatar: firebaseResponse?.user?.photoURL,
+        },
+        { withCredentials: true },
+      );
+      console.log(response?.data);
+      toast.success(response?.data?.message);
+      dispatch(setUserData(response?.data?.user));
+    } catch (error) {
+      console.log(error);
     } finally {
       setLoading(false);
     }
@@ -99,7 +126,10 @@ function Signup({ setOpenSignUp }) {
           <div className="h-px flex-1 bg-zinc-700"></div>
         </div>
 
-        <button className="w-full flex items-center justify-center gap-2 py-2 rounded-lg bg-white text-black font-semibold hover:bg-gray-200 active:scale-[0.98] transition">
+        <button
+          className="w-full flex items-center justify-center gap-2 py-2 rounded-lg bg-white text-black font-semibold hover:bg-gray-200 active:scale-[0.98] transition"
+          onClick={googleLoginUser}
+        >
           <FaGoogle size={18} />
           Continue with Google
         </button>
