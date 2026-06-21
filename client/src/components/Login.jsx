@@ -31,6 +31,7 @@ function Login({ setOpen }) {
       toast.success(response?.data?.message);
       setEmail("");
       setPassword("");
+      setOpen(false);
     } catch (error) {
       console.log(error);
       toast.error(error?.response?.data?.message);
@@ -57,6 +58,7 @@ function Login({ setOpen }) {
       console.log(response?.data);
       toast.success(response?.data?.message);
       dispatch(setUserData(response?.data?.user));
+      setOpen(false);
     } catch (error) {
       console.log(error);
     } finally {

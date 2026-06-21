@@ -3,10 +3,14 @@ import Nav from "../components/Nav";
 import { ArrowRight } from "lucide-react";
 import Login from "../components/Login";
 import Signup from "../components/Signup";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 function Home() {
   let [openLogin, setOpenLogin] = useState(false);
   let [openSignUp, setOpenSignUp] = useState(false);
+  let navigate = useNavigate();
+  let { userData: user } = useSelector((store) => store.user);
 
   return (
     <>
@@ -36,7 +40,16 @@ function Home() {
           </p>
 
           <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3 w-full max-w-md">
-            <button className="group w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-white text-black font-semibold hover:bg-gray-200 transition-all duration-300">
+            <button
+              className="group w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-white text-black font-semibold hover:bg-gray-200 transition-all duration-300"
+              onClick={() => {
+                if (!user) {
+                  setOpenLogin(true);
+                } else {
+                  navigate("/dashboard");
+                }
+              }}
+            >
               Explore Now
               <ArrowRight
                 size={18}
