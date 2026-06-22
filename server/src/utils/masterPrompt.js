@@ -163,9 +163,50 @@ Requirements:
 
 - Relevant to the website topic
 - Responsive
-- Always use https://source.unsplash.com or picsum.photos for images
+- USE RELEVANT AND VALID IAMGES WHICH WAS NOT BLOCKED BY ANY POLICY (LIKE IFAME TAG)
 - Create the full website and ensure all images use valid, accessible URLs (prefer direct Unsplash image links or verified CDN image URLs only; avoid random or deprecated endpoints).
 
+--------------------------------------------------
+IMAGES (STRICT FIX)
+--------------------------------------------------
+
+You MUST use ONLY real, publicly accessible image URLs.
+
+Allowed sources ONLY:
+
+1. https://images.unsplash.com
+2. https://plus.unsplash.com
+3. https://cdn.pixabay.com
+4. https://pixabay.com/get/
+5. https://source.unsplash.com (only if direct image)
+
+STRICT RULES:
+
+- DO NOT invent image URLs
+- DO NOT use placeholder URLs
+- DO NOT use broken or fake CDN links
+- DO NOT use localhost or relative paths
+- DO NOT use random domains
+- DO NOT use Google image links
+- DO NOT use APIs that require keys
+- EVERY image must open directly in browser
+
+FORMAT:
+
+<img src="https://images.unsplash.com/photo-xxxxx" />
+
+OR
+
+background-image: url("https://images.unsplash.com/photo-xxxxx");
+
+QUALITY RULE:
+
+Images must match the website topic exactly.
+
+If you cannot find a valid image:
+- Replace with a generic Unsplash fallback:
+  https://images.unsplash.com/photo-1521737604893-d14cc237f11d
+  
 --------------------------------------------------
 TECHNICAL REQUIREMENTS
 --------------------------------------------------

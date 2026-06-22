@@ -12,12 +12,16 @@ import {
 } from "lucide-react";
 import axios from "axios";
 import { GoDotFill } from "react-icons/go";
+import { useParams } from "react-router-dom";
 
 function ShowWebsite() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([
     { role: "system", text: "Hi 👋, describe your website idea." },
   ]);
+
+  let { id } = useParams();
+  console.log(id);
 
   const [code, setCode] = useState("");
   const [title, setTitle] = useState("AI Generated Website");
@@ -34,7 +38,7 @@ function ShowWebsite() {
   const fetchWebsite = async () => {
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/api/web/getsitebyid/6a38e5219242ae8aab9f632e`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/web/getsitebyid/${id}`,
         { withCredentials: true },
       );
 
