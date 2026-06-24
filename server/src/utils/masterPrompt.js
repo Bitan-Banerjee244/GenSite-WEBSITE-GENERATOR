@@ -166,46 +166,55 @@ Requirements:
 - USE RELEVANT AND VALID IAMGES WHICH WAS NOT BLOCKED BY ANY POLICY (LIKE IFAME TAG)
 - Create the full website and ensure all images use valid, accessible URLs (prefer direct Unsplash image links or verified CDN image URLs only; avoid random or deprecated endpoints).
 
---------------------------------------------------
-IMAGES (STRICT FIX)
---------------------------------------------------
+---
 
-You MUST use ONLY real, publicly accessible image URLs.
+## IMAGES (PRODUCTION SAFE)
 
-Allowed sources ONLY:
+For all images, use ONLY direct image URLs that are guaranteed to exist.
 
-1. https://images.unsplash.com
-2. https://plus.unsplash.com
-3. https://cdn.pixabay.com
-4. https://pixabay.com/get/
-5. https://source.unsplash.com (only if direct image)
+PREFERRED SOURCES:
+
+1. https://picsum.photos
+2. https://images.unsplash.com (ONLY if you know the exact URL exists)
+3. https://cdn.pixabay.com (ONLY if you know the exact URL exists)
 
 STRICT RULES:
 
-- DO NOT invent image URLs
-- DO NOT use placeholder URLs
-- DO NOT use broken or fake CDN links
-- DO NOT use localhost or relative paths
-- DO NOT use random domains
-- DO NOT use Google image links
-- DO NOT use APIs that require keys
-- EVERY image must open directly in browser
+* NEVER invent image URLs.
+* NEVER generate fake Unsplash photo IDs.
+* NEVER generate fake Pixabay CDN URLs.
+* NEVER use deprecated endpoints.
+* NEVER use Google Images links.
+* NEVER use URLs requiring authentication.
+* Every image must load directly in an <img> tag.
 
-FORMAT:
+If you cannot guarantee a real image URL, use Picsum with a descriptive seed:
 
-<img src="https://images.unsplash.com/photo-xxxxx" />
+Hero image:
+https://picsum.photos/seed/hero-{WEBSITE_TOPIC}/1600/900
 
-OR
+About section:
+https://picsum.photos/seed/about-{WEBSITE_TOPIC}/1200/800
 
-background-image: url("https://images.unsplash.com/photo-xxxxx");
+Gallery image:
+https://picsum.photos/seed/gallery1-{WEBSITE_TOPIC}/800/600
 
-QUALITY RULE:
+Team image:
+https://picsum.photos/seed/team-{WEBSITE_TOPIC}/600/600
 
-Images must match the website topic exactly.
+Examples:
 
-If you cannot find a valid image:
-- Replace with a generic Unsplash fallback:
-  https://images.unsplash.com/photo-1521737604893-d14cc237f11d
+Technology website:
+https://picsum.photos/seed/technology-hero/1600/900
+
+Restaurant website:
+https://picsum.photos/seed/restaurant-food/1200/800
+
+Travel website:
+https://picsum.photos/seed/travel-beach/1600/900
+
+## The generated website MUST contain valid, publicly accessible image URLs that always load in the browser.
+- ALSO ENSURE TO TRY VALID IMAGES BASED ON USER QUERY ANY RANDOM IMAGES IN RANDOM PLACES IS NOT VALID
   
 --------------------------------------------------
 TECHNICAL REQUIREMENTS

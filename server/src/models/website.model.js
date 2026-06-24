@@ -40,6 +40,16 @@ const websiteSchema = new mongoose.Schema(
       index: true,
     },
 
+    isDeployed: {
+      type: Boolean,
+      default: false,
+    },
+
+    shareLink: {
+      type: String,
+      default: "",
+    },
+
     chat: [chatSchema],
   },
   { timestamps: true },

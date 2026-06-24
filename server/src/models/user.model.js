@@ -18,7 +18,11 @@ const userSchema = new mongoose.Schema(
     },
     avatar: {
       type: String,
-      default:""
+      default: "",
+    },
+    credits: {
+      type: Number,
+      default: 1000,
     },
   },
   { timestamps: true },

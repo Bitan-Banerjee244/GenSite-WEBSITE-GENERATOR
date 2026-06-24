@@ -1,3 +1,4 @@
+import User from "../models/user.model.js";
 import Website from "../models/website.model.js";
 import generateCode from "../services/generateCode.js";
 import { masterPrompt } from "../utils/masterPrompt.js";
@@ -48,11 +49,28 @@ const generateSlug = (title) => {
 export const generateCodeResponse = async (req, res) => {
   try {
     const { prompt } = req.body;
+    let id = req.user;
 
     if (!prompt?.trim()) {
       return res.status(400).json({
         success: false,
         message: "Prompt is required",
+      });
+    }
+
+    let currentUser = await User.findById(id);
+
+    if (!currentUser) {
+      return res.status(400).json({
+        success: false,
+        message: "User is not authenticated! Please Login !",
+      });
+    }
+
+    if (currentUser.credits < 50) {
+      return res.status(400).json({
+        success: false,
+        message: "Out of credits!",
       });
     }
 
@@ -88,6 +106,9 @@ export const generateCodeResponse = async (req, res) => {
       });
     }
 
+    currentUser.credits-=100;
+    await currentUser.save();
+    
     const cleanData = {
       title: data.title.trim(),
       code: data.code,

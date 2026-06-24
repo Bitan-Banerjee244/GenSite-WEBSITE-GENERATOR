@@ -39,7 +39,7 @@ function Nav({ setOpen, setOpenSignUp }) {
             <div className="flex items-center gap-1 px-3 py-1 rounded-lg bg-gray-900 border border-gray-800 text-[13px] sm:text-[14px] text-gray-200">
               <Coins size={16} className="text-yellow-400" />
               <span className="hidden sm:block">Credits:</span>
-              <span className="font-semibold text-white">1000</span>
+              <span className="font-semibold text-white">{user?.credits}</span>
             </div>
           )}
 
@@ -112,7 +112,7 @@ function Nav({ setOpen, setOpenSignUp }) {
                 <CoinsIcon className="text-orange-300" size={18} />
                 Credits
               </span>
-              <span className="font-bold">1000</span>
+              <span className="font-bold">{user?.credits}</span>
             </div>
 
             {/* Logout */}
