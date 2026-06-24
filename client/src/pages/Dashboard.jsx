@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Plus, Rocket, Globe, ExternalLink } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import GenWeb from "./GenWeb";
 
 function Dashboard() {
   const [websites, setWebsites] = useState([]);
@@ -33,13 +34,18 @@ function Dashboard() {
   return (
     <>
       <nav className="fixed top-0 left-0 w-full h-16 border-b border-zinc-900 bg-black/90 backdrop-blur-md flex items-center justify-between px-6 z-50">
-        <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-cyan-400 bg-clip-text text-transparent">
+        <div className="text-2xl sm:text-3xl font-bold tracking-wide bg-gradient-to-r from-purple-400 via-violet-500 to-blue-500 text-transparent bg-clip-text">
           GenSite
-        </h1>
+        </div>
 
-        <button className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 md:px-5 md:py-2 px-3 py-2 rounded-lg font-medium hover:scale-105 transition-all duration-300">
+        <button className="flex items-center gap-2 bg-gradient-to-r bg-white md:px-5 md:py-2 px-3 py-2 rounded-lg font-medium hover:scale-105 transition-all duration-300">
           <Plus size={18} />
-          <span className="hidden sm:block">New Website</span>
+          <span
+            className="hidden sm:block"
+            onClick={()=>navigate("/genweb")}
+          >
+            New Website
+          </span>
         </button>
       </nav>
 
@@ -68,7 +74,10 @@ function Dashboard() {
                 Create your first AI-generated website and it will appear here.
               </p>
 
-              <button className="mt-6 flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 px-5 py-3 rounded-xl hover:scale-105 transition">
+              <button
+                className="mt-6 flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 px-5 py-3 rounded-xl hover:scale-105 transition"
+                onClick={()=>navigate("/genweb")}
+              >
                 <Plus size={18} />
                 Create Website
               </button>

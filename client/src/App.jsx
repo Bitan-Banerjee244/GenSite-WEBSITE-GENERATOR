@@ -4,6 +4,7 @@ import userCurrentData from "./hooks/userCurrentData";
 import Dashboard from "./pages/Dashboard";
 import { useSelector } from "react-redux";
 import ShowWebsite from "./pages/ShowWebsite";
+import GenWeb from "./pages/GenWeb";
 
 function App() {
   userCurrentData();
@@ -21,6 +22,7 @@ function App() {
         element={userData ? <Dashboard /> : <Navigate to={"/"} />}
       />
       <Route path="/showwebsite/:id" element={<ShowWebsite/>}/>
+      <Route path="/genweb" element={<GenWeb/>}/>
     </Routes>
   );
 }
