@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { setUserData } from "../store/user/userSlice";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { auth } from "../auth/auth";
+import { motion } from "motion/react";
 
 function Signup({ setOpenSignUp }) {
   // Hooks && Variables
@@ -67,9 +68,11 @@ function Signup({ setOpenSignUp }) {
   };
 
   return (
-    <div
+    <motion.div
       className="fixed inset-0 flex items-center justify-center bg-black/70 backdrop-blur-lg z-50 px-4"
       onClick={() => setOpenSignUp(false)}
+      initial={{ x: -20, opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
     >
       <div
         className="w-full max-w-md rounded-2xl border border-white/10 bg-zinc-900/90 p-6 text-white shadow-xl"
@@ -138,7 +141,7 @@ function Signup({ setOpenSignUp }) {
           By signing up, you agree to our Terms & Privacy Policy
         </p>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

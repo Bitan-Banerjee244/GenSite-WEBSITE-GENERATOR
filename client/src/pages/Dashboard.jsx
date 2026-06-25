@@ -3,6 +3,7 @@ import axios from "axios";
 import { Plus, Rocket, Globe, ExternalLink } from "lucide-react";
 import { Navigate, useNavigate } from "react-router-dom";
 import GenWeb from "./GenWeb";
+import { motion } from "motion/react";
 
 function Dashboard() {
   const [websites, setWebsites] = useState([]);
@@ -34,29 +35,41 @@ function Dashboard() {
   return (
     <>
       <nav className="fixed top-0 left-0 w-full h-16 border-b border-zinc-900 bg-black/90 backdrop-blur-md flex items-center justify-between px-6 z-50">
-        <div className="text-2xl sm:text-3xl font-bold tracking-wide bg-gradient-to-r from-purple-400 via-violet-500 to-blue-500 text-transparent bg-clip-text">
+        <motion.div
+          className="text-2xl sm:text-3xl font-bold tracking-wide bg-gradient-to-r from-purple-400 via-violet-500 to-blue-500 text-transparent bg-clip-text"
+          initial={{ x: -50, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ type: "tween" }}
+        >
           GenSite
-        </div>
+        </motion.div>
 
-        <button className="flex items-center gap-2 bg-gradient-to-r bg-white md:px-5 md:py-2 px-3 py-2 rounded-lg font-medium hover:scale-105 transition-all duration-300">
+        <motion.button
+          className="flex items-center gap-2 bg-gradient-to-r bg-white md:px-5 md:py-2 px-3 py-2 rounded-lg font-medium hover:scale-105 transition-all duration-300"
+          initial={{ x: 200, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ type: "tween" }}
+        >
           <Plus size={18} />
-          <span
-            className="hidden sm:block"
-            onClick={()=>navigate("/genweb")}
-          >
+          <span className="hidden sm:block" onClick={() => navigate("/genweb")}>
             New Website
           </span>
-        </button>
+        </motion.button>
       </nav>
 
-      <main className="min-h-screen bg-black text-white overflow-x-hidden pt-16">
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          <div className="mb-8">
+      <main className="min-h-screen bg-black text-white overflow-x-hidden pt-16 ">
+        <div className="max-w-7xl mx-auto px-2 py-8">
+          <motion.div
+            className="mb-8"
+            initial={{ x: -50, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ type: "spring", duration: "0.3" }}
+          >
             <h2 className="text-3xl font-bold">My Websites</h2>
             <p className="text-zinc-400 mt-2">
               Manage and deploy your AI-generated websites.
             </p>
-          </div>
+          </motion.div>
 
           {loading ? (
             <div className="flex justify-center items-center py-32">
@@ -76,7 +89,7 @@ function Dashboard() {
 
               <button
                 className="mt-6 flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 px-5 py-3 rounded-xl hover:scale-105 transition"
-                onClick={()=>navigate("/genweb")}
+                onClick={() => navigate("/genweb")}
               >
                 <Plus size={18} />
                 Create Website
@@ -84,10 +97,13 @@ function Dashboard() {
             </div>
           ) : (
             <div className="grid xl:grid-cols-4 lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-5">
-              {websites.map((site) => (
-                <div
+              {websites.map((site, index) => (
+                <motion.div
                   key={site._id}
                   className="bg-[#090909] border border-zinc-800 rounded-2xl overflow-hidden hover:border-purple-500 transition-all duration-300 hover:shadow-lg hover:shadow-purple-900/20"
+                  initial={{ y: 50, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  // transition={{ delay: `${(index) * 0.1}`, type: "tween" ,duration:"0.3"}}
                 >
                   <div className="h-44 bg-white overflow-hidden relative border-b border-zinc-800">
                     <div
@@ -131,7 +147,7 @@ function Dashboard() {
                       </button>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
           )}

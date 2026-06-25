@@ -1,17 +1,33 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Coins, CoinsIcon, LogOut } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { setUserData } from "../store/user/userSlice";
 import { toast } from "react-hot-toast";
+import { AnimatePresence, motion } from "motion/react";
 
 function Nav({ setOpen, setOpenSignUp }) {
   // Hooks
   const user = useSelector((store) => store.user.userData);
-  const [popUp, setPopUp] = useState(true);
+  const [popUp, setPopUp] = useState(false);
+  const popupRef = useRef(null);
   let dispatch = useDispatch();
 
   // Functions and State
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (popupRef.current && !popupRef.current.contains(event.target)) {
+        setPopUp(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   const logOutUser = async () => {
     try {
       let response = await axios.get(
@@ -20,7 +36,7 @@ function Nav({ setOpen, setOpenSignUp }) {
       );
       dispatch(setUserData(null));
       toast.success(response?.data?.message);
-      setPopUp(prev=>!prev);
+      setPopUp((prev) => !prev);
     } catch (error) {
       console.log(error.response?.data?.message);
       toast.error(error?.response?.data?.message);
@@ -30,11 +46,21 @@ function Nav({ setOpen, setOpenSignUp }) {
   return (
     <nav className="w-full h-14 z-50 bg-black text-white fixed top-0 left-0 border-b border-gray-800">
       <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 md:px-14 h-full">
-        <div className="text-2xl sm:text-3xl font-bold tracking-wide bg-gradient-to-r from-purple-400 via-violet-500 to-blue-500 text-transparent bg-clip-text">
+        <motion.div
+          className="text-2xl sm:text-3xl font-bold tracking-wide bg-gradient-to-r from-purple-400 via-violet-500 to-blue-500 text-transparent bg-clip-text"
+          initial={{ x: -20, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ type: "tween" }}
+        >
           GenSite
-        </div>
+        </motion.div>
 
-        <div className="flex items-center gap-3 md:gap-4">
+        <motion.div
+          className="flex items-center gap-3 md:gap-4"
+          initial={{ x: 20, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ type: "tween", duration: "0.5", delay: "0.2" }}
+        >
           {user && (
             <div className="flex items-center gap-1 px-3 py-1 rounded-lg bg-gray-900 border border-gray-800 text-[13px] sm:text-[14px] text-gray-200">
               <Coins size={16} className="text-yellow-400" />
@@ -78,55 +104,62 @@ function Nav({ setOpen, setOpenSignUp }) {
             />
           )}
 
-          <div
-            className={`${
-              popUp ? "hidden" : "block"
-            } z-10 absolute top-[60px] right-7 w-54 bg-black rounded-xl shadow-lg border border-gray-100/30 overflow-hidden `}
-          >
-            {/* Profile Section */}
-            <div className="p-4 flex items-center gap-3 border border-solid border-b-2 border-gray-100/30">
-              {user && user?.avatar == "" && (
-                <div
-                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-800 border border-gray-700 flex justify-center items-center cursor-pointer"
-                  onClick={() => setPopUp((prev) => !prev)}
-                >
-                  {user?.fullName[0]}
-                </div>
-              )}
-
-              {user && user?.avatar != "" && (
-                <img
-                  className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-800 border border-gray-700 flex justify-center items-center cursor-pointer`}
-                  src={user?.avatar}
-                  onClick={() => setPopUp((prev) => !prev)}
-                />
-              )}
-              <div>
-                <p className="font-semibold">{user?.fullName}</p>
-              </div>
-            </div>
-
-            {/* Credit Section */}
-            <div className="p-4 flex justify-between items-center">
-              <span className="flex gap-2">
-                <CoinsIcon className="text-orange-300" size={18} />
-                Credits
-              </span>
-              <span className="font-bold">{user?.credits}</span>
-            </div>
-
-            {/* Logout */}
-            <div className="p-3">
-              <button
-                className="w-full bg-red-700 hover:bg-red-900 text-white py-2 rounded-lg transition flex justify-center items-center gap-2"
-                onClick={logOutUser}
+          <AnimatePresence>
+            {popUp && (
+              <motion.div
+                ref={popupRef}
+                className={`
+            z-10 absolute top-[60px] right-7 w-54 bg-black rounded-xl shadow-lg border border-gray-100/30 overflow-hidden `}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
               >
-                <LogOut size={18} />
-                Logout
-              </button>
-            </div>
-          </div>
-        </div>
+                {/* Profile Section */}
+                <div className="p-4 flex items-center gap-3 border border-solid border-b-2 border-gray-100/30">
+                  {user && user?.avatar == "" && (
+                    <div
+                      className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-800 border border-gray-700 flex justify-center items-center cursor-pointer"
+                      onClick={() => setPopUp((prev) => !prev)}
+                    >
+                      {user?.fullName[0]}
+                    </div>
+                  )}
+
+                  {user && user?.avatar != "" && (
+                    <img
+                      className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-800 border border-gray-700 flex justify-center items-center cursor-pointer`}
+                      src={user?.avatar}
+                      onClick={() => setPopUp((prev) => !prev)}
+                    />
+                  )}
+                  <div>
+                    <p className="font-semibold">{user?.fullName}</p>
+                  </div>
+                </div>
+
+                {/* Credit Section */}
+                <div className="p-4 flex justify-between items-center">
+                  <span className="flex gap-2">
+                    <CoinsIcon className="text-orange-300" size={18} />
+                    Credits
+                  </span>
+                  <span className="font-bold">{user?.credits}</span>
+                </div>
+
+                {/* Logout */}
+                <div className="p-3">
+                  <button
+                    className="w-full bg-red-700 hover:bg-red-900 text-white py-2 rounded-lg transition flex justify-center items-center gap-2"
+                    onClick={logOutUser}
+                  >
+                    <LogOut size={18} />
+                    Logout
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
       </div>
     </nav>
   );

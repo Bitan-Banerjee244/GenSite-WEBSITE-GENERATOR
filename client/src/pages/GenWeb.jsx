@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import { motion } from "motion/react";
 
 function GenWeb() {
   const [prompt, setPrompt] = useState("");
@@ -70,9 +71,13 @@ function GenWeb() {
     <div className="min-h-screen bg-black text-white flex items-center justify-center px-4">
       {!loading ? (
         <div className="w-full max-w-2xl">
-          <h1 className="text-4xl font-bold text-center mb-6 bg-gradient-to-r from-purple-400 to-cyan-400 text-transparent bg-clip-text">
+          <motion.h1
+            className="text-4xl font-bold text-center mb-6 bg-gradient-to-r from-purple-400 to-cyan-400 text-transparent bg-clip-text"
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+          >
             AI Website Generator
-          </h1>
+          </motion.h1>
 
           <textarea
             value={prompt}
@@ -81,12 +86,14 @@ function GenWeb() {
             className="w-full h-40 p-4 rounded-xl bg-zinc-900 border border-zinc-800 focus:border-purple-500 outline-none"
           />
 
-          <button
+          <motion.button
             onClick={generateWebsite}
             className="w-full mt-4 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:scale-[1.02] transition font-semibold"
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
           >
             Generate Website
-          </button>
+          </motion.button>
         </div>
       ) : (
         <div className="w-full max-w-xl text-center">
