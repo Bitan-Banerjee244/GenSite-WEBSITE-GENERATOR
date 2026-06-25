@@ -1,8 +1,10 @@
 import express from "express";
 import isAuthenticated from "../middlewares/isAuthenticated.js";
 import {
+  createURL,
   generateCodeResponse,
   getAllWebsites,
+  getWebBySlug,
   getWebsitesById,
 } from "../controllers/website.controller.js";
 
@@ -23,5 +25,16 @@ websiteRouter.get("/getsite", isAuthenticated, getAllWebsites);
  * @desc Get website by id
  */
 websiteRouter.get("/getsitebyid/:id", isAuthenticated, getWebsitesById);
+/**
+ * @route GET api/web/site/:slug
+ * @desc Get website by id
+ */
+websiteRouter.get("/site/:slug", getWebBySlug);
+
+/**
+ * @route GET api/web/site/:id
+ * @desc Generate Public URL
+ */
+websiteRouter.post("/site/:id", isAuthenticated, createURL);
 
 export default websiteRouter;

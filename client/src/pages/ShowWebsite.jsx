@@ -9,13 +9,16 @@ import {
   Rocket,
   X,
   MessageCircle,
+  Share2,
 } from "lucide-react";
 import axios from "axios";
 import { GoDotFill } from "react-icons/go";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
+import { toast } from "react-hot-toast";
 
 function ShowWebsite() {
+  // Hooks
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([
     { role: "system", text: "Hi 👋, describe your website idea." },
@@ -26,11 +29,13 @@ function ShowWebsite() {
 
   const [code, setCode] = useState("");
   const [title, setTitle] = useState("AI Generated Website");
-
+  const [website, setWebsite] = useState(null);
+  const [refresh, setRefresh] = useState(false);
   const [isFull, setIsFull] = useState(false);
   const [showEditor, setShowEditor] = useState(false);
   const [showChat, setShowChat] = useState(true);
 
+  // Functions and States
   const handleSend = () => {
     if (!input.trim()) return;
     setInput("");
@@ -44,7 +49,8 @@ function ShowWebsite() {
       );
 
       const website = response?.data?.website;
-
+      setWebsite(website || null);
+      console.log(response?.data);
       setCode(website?.code || "");
       setTitle(website?.title || "AI Generated Website");
 
@@ -59,9 +65,25 @@ function ShowWebsite() {
     }
   };
 
+  const deployWebsite = async (id) => {
+    try {
+      let response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/web/site/${id}`,
+        {},
+        { withCredentials: true },
+      );
+      console.log(response?.data);
+      toast.success(response?.data?.message);
+      setRefresh((prev) => !prev);
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.response?.data?.message);
+    }
+  };
+
   useEffect(() => {
     fetchWebsite();
-  }, []);
+  }, [refresh]);
 
   return (
     <div className="w-full h-screen bg-black text-white overflow-hidden">
@@ -252,10 +274,26 @@ function ShowWebsite() {
                   Full
                 </button>
 
-                <button className="px-3 py-1 bg-blue-600 rounded flex justify-center items-center gap-2">
-                  <Rocket size={14} />
-                  Deploy
-                </button>
+                {!website?.isDeployed && (
+                  <button
+                    className="flex items-center justify-center gap-1 flex-1 py-2 rounded-lg bg-gradient-to-r from-green-600 to-emerald-600 hover:opacity-90 transition text-sm font-medium px-2"
+                    onClick={() => deployWebsite(website?._id)}
+                  >
+                    <Rocket size={14} />
+                    Deploy
+                  </button>
+                )}
+
+                {website?.isDeployed && (
+                  <Link
+                    className="flex items-center justify-center gap-1 flex-1 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 hover:opacity-90 transition text-sm font-medium px-3"
+                    to={website?.shareLink}
+                    target="_black"
+                  >
+                    <Share2 size={14} />
+                    Share Link
+                  </Link>
+                )}
               </motion.div>
             </div>
 

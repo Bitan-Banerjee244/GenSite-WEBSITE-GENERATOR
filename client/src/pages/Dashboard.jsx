@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Plus, Rocket, Globe, ExternalLink } from "lucide-react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Plus, Rocket, Globe, ExternalLink, Share2 } from "lucide-react";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import GenWeb from "./GenWeb";
 import { motion } from "motion/react";
+import toast from "react-hot-toast";
 
 function Dashboard() {
   const [websites, setWebsites] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [refresh, setRefresh] = useState(false);
 
   const navigate = useNavigate();
 
@@ -28,9 +30,25 @@ function Dashboard() {
     }
   };
 
+  const deployWebsite = async (id) => {
+    try {
+      let response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/web/site/${id}`,
+        {},
+        { withCredentials: true },
+      );
+      console.log(response?.data);
+      toast.success(response?.data?.message);
+      setRefresh((prev) => !prev);
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.response?.data?.message);
+    }
+  };
+
   useEffect(() => {
     getAllWebsites();
-  }, []);
+  }, [refresh]);
 
   return (
     <>
@@ -141,10 +159,26 @@ function Dashboard() {
                         Open
                       </button>
 
-                      <button className="flex items-center justify-center gap-1 flex-1 py-2 rounded-lg bg-gradient-to-r from-green-600 to-emerald-600 hover:opacity-90 transition text-sm font-medium">
-                        <Rocket size={14} />
-                        Deploy
-                      </button>
+                      {!site.isDeployed && (
+                        <button
+                          className="flex items-center justify-center gap-1 flex-1 py-2 rounded-lg bg-gradient-to-r from-green-600 to-emerald-600 hover:opacity-90 transition text-sm font-medium"
+                          onClick={() => deployWebsite(site?._id)}
+                        >
+                          <Rocket size={14} />
+                          Deploy
+                        </button>
+                      )}
+
+                      {site.isDeployed && (
+                        <Link
+                          className="flex items-center justify-center gap-1 flex-1 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 hover:opacity-90 transition text-sm font-medium"
+                          to={site?.shareLink}
+                          target="_black"
+                        >
+                          <Share2 size={14} />
+                          Share Link
+                        </Link>
+                      )}
                     </div>
                   </div>
                 </motion.div>

@@ -62,8 +62,8 @@ function GenWeb() {
       setLoading(false);
       setProgress(0);
       setStepText("Error generating website");
-      console.log(error);
-      toast.error(error?.res?.data?.message);
+      console.log(err);
+      toast.error(err?.res?.data?.message);
     }
   };
 

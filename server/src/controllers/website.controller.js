@@ -106,9 +106,9 @@ export const generateCodeResponse = async (req, res) => {
       });
     }
 
-    currentUser.credits-=100;
+    currentUser.credits -= 100;
     await currentUser.save();
-    
+
     const cleanData = {
       title: data.title.trim(),
       code: data.code,
@@ -137,6 +137,7 @@ export const generateCodeResponse = async (req, res) => {
 
     return res.status(200).json({
       success: true,
+      message: "Website Generated Successfully",
       website,
     });
   } catch (error) {
@@ -211,6 +212,78 @@ export const getWebsitesById = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       message: "Website not found! Error occurred in server",
+      success: false,
+      error: error,
+    });
+  }
+};
+
+export const getWebBySlug = async (req, res) => {
+  try {
+    let { slug } = req.params;
+
+    if (!slug) {
+      return res.status(400).json({
+        message: "No Slug found",
+        success: false,
+      });
+    }
+
+    const website = await Website.findOne({
+      slug,
+    });
+
+    if (!website) {
+      return res.status(404).json({
+        success: false,
+        message: "Website not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      website,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error occurred in server",
+      success: false,
+      error: error,
+    });
+  }
+};
+
+export const createURL = async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!id) {
+      return res.status(400).json({
+        message: "No id found",
+        success: false,
+      });
+    }
+
+    let website = await Website.findById(id);
+    if (!website) {
+      return res.status(404).json({
+        success: false,
+        message: "Website not found",
+      });
+    }
+
+    let url = `${process.env.FRONTEND_URL}/site/${website?.slug}/${website?._id.toString().slice(-5)}`;
+    website.isDeployed = true;
+    website.shareLink = url;
+    await website.save();
+
+    return res.status(200).json({
+      message: "Website Deployed Successfully",
+      success: false,
+      url: website?.shareLink,
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Error occurred in create url",
       success: false,
       error: error,
     });
