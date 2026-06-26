@@ -162,6 +162,7 @@ export const googleLogin = async (req, res) => {
         fullName: user.fullName,
         email: user.email,
         avatar: user.avatar,
+        credits: user.credits,
       },
     });
   } catch (error) {
@@ -198,7 +199,6 @@ export const getCurrentUser = async (req, res) => {
       message: "User fetched successfully",
       user,
     });
-    
   } catch (error) {
     return res.status(500).json({
       success: false,

@@ -16,6 +16,9 @@ import { GoDotFill } from "react-icons/go";
 import { Link, useParams } from "react-router-dom";
 import { AnimatePresence, motion } from "motion/react";
 import { toast } from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { setCurrentWebsite } from "../store/web/webSlice";
+import { toggleRefresh } from "../store/user/userSlice";
 
 function ShowWebsite() {
   // Hooks
@@ -32,6 +35,7 @@ function ShowWebsite() {
   const [showEditor, setShowEditor] = useState(false);
   const [showChat, setShowChat] = useState(true);
   const [loading, setLoading] = useState(false);
+  let dispatch = useDispatch();
 
   // Functions and States
   const handleSend = () => {
@@ -48,8 +52,10 @@ function ShowWebsite() {
       );
 
       const website = response?.data?.website;
+
       setWebsite(website || null);
-      console.log(response?.data);
+      // console.log(response?.data);
+      dispatch(setCurrentWebsite(website || null));
       setCode(website?.code || "");
       setTitle(website?.title || "AI Generated Website");
 
@@ -123,10 +129,12 @@ function ShowWebsite() {
           text: aiMessage,
         },
       ]);
-
+      dispatch(setCurrentWebsite(response?.data?.website));
       setCode(response.data.website.code);
       setWebsite(response.data.website);
       setTitle(response.data.website.title);
+      dispatch(toggleRefresh());
+      
     } catch (error) {
       console.log(error);
       toast.error(error?.response?.data?.message);

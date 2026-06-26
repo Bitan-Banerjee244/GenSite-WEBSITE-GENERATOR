@@ -90,7 +90,7 @@ export const generateCodeResponse = async (req, res) => {
     if (!data) {
       return res.status(500).json({
         success: false,
-        message: "Invalid JSON returned by AI",
+        message: "Invalid JSON returned by AI. Please Try again",
       });
     }
 
@@ -333,7 +333,7 @@ export const updateWebsite = async (req, res) => {
     // Create final prompt
     const finalPrompt = updatePrompt
       .replace("{USER_QUERY}", prompt)
-      .replace("{CURRENT_CODE}", website.code);
+      .replace("{CURRENT_CODE}", website?.code);
 
     // Generate updated website
     const output = await generateCode(finalPrompt);
@@ -385,7 +385,7 @@ export const updateWebsite = async (req, res) => {
 
     return res.status(500).json({
       success: false,
-      message: "Error occurred while updating website.",
+      message: "Server Busy ! Please wait,Try again after sometime",
       error: error.message,
     });
   }

@@ -303,7 +303,7 @@ RULES
 5. Maintain accessibility and semantic HTML.
 6. Maintain all existing sections unless the user asks to add/remove sections.
 7. Ensure the updated code is production ready.
-
+8. No extra text in between the json
 --------------------------------------------------
 JSON RULES
 --------------------------------------------------
@@ -340,4 +340,17 @@ Before returning:
 If validation fails, regenerate.
 
 RETURN ONLY THE JSON OBJECT.
+
+CRITICAL:
+
+YOUR ENTIRE RESPONSE MUST BE A SINGLE JSON OBJECT.
+
+DO NOT write:
+- "Here is the updated website"
+- "I made the following changes"
+- Markdown code fences
+- Or any explanation .
+
+
+Any response containing text outside the JSON object is INVALID.
 `;

@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { Coins, CoinsIcon, LogOut } from "lucide-react";
+import { Coins, CoinsIcon, CreditCard, Key, LogOut } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { setUserData } from "../store/user/userSlice";
 import { toast } from "react-hot-toast";
 import { AnimatePresence, motion } from "motion/react";
+import { setCurrentWebsite } from "../store/web/webSlice";
 
 function Nav({ setOpen, setOpenSignUp }) {
   // Hooks
@@ -35,6 +36,7 @@ function Nav({ setOpen, setOpenSignUp }) {
         { withCredentials: true },
       );
       dispatch(setUserData(null));
+      dispatch(setCurrentWebsite(null));
       toast.success(response?.data?.message);
       setPopUp((prev) => !prev);
     } catch (error) {
@@ -108,52 +110,53 @@ function Nav({ setOpen, setOpenSignUp }) {
             {popUp && (
               <motion.div
                 ref={popupRef}
-                className={`
-            z-10 absolute top-[60px] right-7 w-54 bg-black rounded-xl shadow-lg border border-gray-100/30 overflow-hidden `}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 10 }}
+                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                transition={{ duration: 0.2 }}
+                className="absolute top-[60px] right-4 z-50 w-56 overflow-hidden rounded-2xl border border-white/10 bg-white/10 backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,0,0,0.35)]"
               >
-                {/* Profile Section */}
-                <div className="p-4 flex items-center gap-3 border border-solid border-b-2 border-gray-100/30">
-                  {user && user?.avatar == "" && (
-                    <div
-                      className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-800 border border-gray-700 flex justify-center items-center cursor-pointer"
-                      onClick={() => setPopUp((prev) => !prev)}
-                    >
-                      {user?.fullName[0]}
-                    </div>
-                  )}
-
-                  {user && user?.avatar != "" && (
-                    <img
-                      className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gray-800 border border-gray-700 flex justify-center items-center cursor-pointer`}
-                      src={user?.avatar}
-                      onClick={() => setPopUp((prev) => !prev)}
-                    />
-                  )}
-                  <div>
-                    <p className="font-semibold">{user?.fullName}</p>
-                  </div>
-                </div>
-
-                {/* Credit Section */}
-                <div className="p-4 flex justify-between items-center">
-                  <span className="flex gap-2">
-                    <CoinsIcon className="text-orange-300" size={18} />
-                    Credits
-                  </span>
-                  <span className="font-bold">{user?.credits}</span>
-                </div>
-
-                {/* Logout */}
-                <div className="p-3">
+                <div className="p-2 space-y-1">
                   <button
-                    className="w-full bg-red-700 hover:bg-red-900 text-white py-2 rounded-lg transition flex justify-center items-center gap-2"
+                    onClick={() => navigate("/apikey")}
+                    className="
+            w-full flex items-center gap-3
+            px-4 py-3 rounded-xl
+            hover:bg-white/10
+            transition-all duration-200
+          "
+                  >
+                    <Key size={18} className="text-cyan-400" />
+                    <span>Add API Key</span>
+                  </button>
+
+                  <button
+                    onClick={() => navigate("/purchase-credits")}
+                    className="
+            w-full flex items-center gap-3
+            px-4 py-3 rounded-xl
+            hover:bg-white/10
+            transition-all duration-200
+          "
+                  >
+                    <CreditCard size={18} className="text-yellow-400" />
+                    <span>Purchase Credits</span>
+                  </button>
+
+                  <div className="h-px bg-white/10 my-1" />
+
+                  <button
                     onClick={logOutUser}
+                    className="
+            w-full flex items-center gap-3
+            px-4 py-3 rounded-xl
+            text-red-400
+            hover:bg-red-500/10
+            transition-all duration-200
+          "
                   >
                     <LogOut size={18} />
-                    Logout
+                    <span>Logout</span>
                   </button>
                 </div>
               </motion.div>

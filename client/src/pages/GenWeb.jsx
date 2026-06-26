@@ -3,12 +3,15 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { motion } from "motion/react";
+import { useDispatch } from "react-redux";
+import { toggleRefresh } from "../store/user/userSlice";
 
 function GenWeb() {
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [stepText, setStepText] = useState("");
+  let dispatch = useDispatch();
 
   const navigate = useNavigate();
 
@@ -54,6 +57,7 @@ function GenWeb() {
       setProgress(100);
       setStepText("Completed!");
       toast.success(res?.data?.message);
+      dispatch(toggleRefresh());
       setTimeout(() => {
         navigate(`/showwebsite/${res?.data?.website?._id || res.data._id}`);
       }, 800);
@@ -63,7 +67,9 @@ function GenWeb() {
       setProgress(0);
       setStepText("Error generating website");
       console.log(err);
-      toast.error(err?.res?.data?.message);
+      toast.error(
+        err?.response?.data?.message || "Something Went wrong please try again",
+      );
     }
   };
 
@@ -88,12 +94,29 @@ function GenWeb() {
 
           <motion.button
             onClick={generateWebsite}
-            className="w-full mt-4 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:scale-[1.02] transition font-semibold"
+            className="w-full mt-4 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 hover:scale-[1.05] transition font-semibold"
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
           >
             Generate Website
           </motion.button>
+
+          <motion.div
+            className="text-center mt-6 text-sm text-gray-400"
+            initial={{ y: 50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <p>
+              Each website creation costs{" "}
+              <span className="font-semibold text-yellow-400">100 Credits</span>
+            </p>
+
+            <p className="mt-2">
+              Each website update costs{" "}
+              <span className="font-semibold text-yellow-400">50 Credits</span>
+            </p>
+          </motion.div>
         </div>
       ) : (
         <div className="w-full max-w-xl text-center">

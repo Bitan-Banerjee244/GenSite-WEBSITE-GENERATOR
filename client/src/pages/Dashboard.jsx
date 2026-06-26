@@ -52,7 +52,7 @@ function Dashboard() {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 w-full h-16 border-b border-zinc-900 bg-black/90 backdrop-blur-md flex items-center justify-between px-6 z-50">
+      <nav className="fixed top-0 left-0 w-full h-16 border-b border-zinc-900 bg-black/90 backdrop-blur-md border-box flex items-center justify-between px-6 z-50">
         <motion.div
           className="text-2xl sm:text-3xl font-bold tracking-wide bg-gradient-to-r from-purple-400 via-violet-500 to-blue-500 text-transparent bg-clip-text"
           initial={{ x: -50, opacity: 0 }}

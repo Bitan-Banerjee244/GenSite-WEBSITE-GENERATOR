@@ -5,6 +5,7 @@ import { setLoading, setUserData } from "../store/user/userSlice";
 
 const useCurrentUser = () => {
   const dispatch = useDispatch();
+  let refresh = useSelector(store=>store.user.refreshPage)
 
   useEffect(() => {
     const getCurrentUser = async () => {
@@ -23,7 +24,7 @@ const useCurrentUser = () => {
     };
 
     getCurrentUser();
-  }, [dispatch]);
+  }, [dispatch,refresh]);
 };
 
 export default useCurrentUser;

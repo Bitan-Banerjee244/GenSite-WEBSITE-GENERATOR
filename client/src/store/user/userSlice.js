@@ -5,6 +5,7 @@ const userSlice = createSlice({
   initialState: {
     userData: null,
     loading: true,
+    refreshPage: true,
   },
 
   reducers: {
@@ -16,8 +17,12 @@ const userSlice = createSlice({
     setLoading: (state, action) => {
       state.loading = action.payload;
     },
+
+    toggleRefresh: (state, action) => {
+      state.refreshPage = !state.refreshPage;
+    },
   },
 });
 
-export const { setUserData, setLoading } = userSlice.actions;
+export const { setUserData, setLoading, toggleRefresh } = userSlice.actions;
 export default userSlice.reducer;
