@@ -1,7 +1,7 @@
 import User from "../models/user.model.js";
 import Website from "../models/website.model.js";
 import generateCode from "../services/generateCode.js";
-import { masterPrompt } from "../utils/masterPrompt.js";
+import { masterPrompt, updatePrompt } from "../utils/masterPrompt.js";
 
 const safeParseJSON = (response) => {
   try {
@@ -286,6 +286,107 @@ export const createURL = async (req, res) => {
       message: "Error occurred in create url",
       success: false,
       error: error,
+    });
+  }
+};
+
+export const updateWebsite = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { prompt } = req.body;
+    let userId = req.user;
+
+    // Validate input
+    if (!id || !prompt?.trim()) {
+      return res.status(400).json({
+        success: false,
+        message: "Prompt or website id is missing.",
+      });
+    }
+
+    // Find website
+    const website = await Website.findById(id);
+
+    if (!website) {
+      return res.status(404).json({
+        success: false,
+        message: "Website not found.",
+      });
+    }
+
+    if (!userId) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found.Please Login",
+      });
+    }
+
+    let user = await User.findById(userId);
+
+    if (user.credits < 50) {
+      return res.status(404).json({
+        success: false,
+        message: "Credits unavailable",
+      });
+    }
+
+    // Create final prompt
+    const finalPrompt = updatePrompt
+      .replace("{USER_QUERY}", prompt)
+      .replace("{CURRENT_CODE}", website.code);
+
+    // Generate updated website
+    const output = await generateCode(finalPrompt);
+
+    // Remove markdown if AI sends it
+    const cleanedOutput = output
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
+      .trim();
+
+    let data;
+
+    try {
+      data = JSON.parse(cleanedOutput);
+    } catch (err) {
+      console.log("Invalid JSON from AI:");
+      console.log(cleanedOutput);
+
+      return res.status(500).json({
+        success: false,
+        message: "AI returned invalid JSON.",
+        raw: cleanedOutput,
+      });
+    }
+
+    website.code = data.code || website.code;
+    website.chat.push(
+      {
+        role: "user",
+        context: prompt,
+      },
+      {
+        role: "ai",
+        context: data?.response,
+      },
+    );
+    await website.save();
+
+    user.credits -= 50;
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Website updated successfully.",
+      website: website,
+    });
+  } catch (error) {
+    console.error("Update Website Error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Error occurred while updating website.",
+      error: error.message,
     });
   }
 };

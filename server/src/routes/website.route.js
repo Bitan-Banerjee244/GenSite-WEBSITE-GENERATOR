@@ -6,6 +6,7 @@ import {
   getAllWebsites,
   getWebBySlug,
   getWebsitesById,
+  updateWebsite,
 } from "../controllers/website.controller.js";
 
 const websiteRouter = express.Router();
@@ -36,5 +37,11 @@ websiteRouter.get("/site/:slug", getWebBySlug);
  * @desc Generate Public URL
  */
 websiteRouter.post("/site/:id", isAuthenticated, createURL);
+
+/**
+ * @route PUT api/web/update/:id
+ * @desc Update the code
+ */
+websiteRouter.put("/update/:id", isAuthenticated, updateWebsite);
 
 export default websiteRouter;

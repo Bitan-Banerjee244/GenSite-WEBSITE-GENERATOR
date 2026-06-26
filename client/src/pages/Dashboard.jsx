@@ -75,8 +75,8 @@ function Dashboard() {
         </motion.button>
       </nav>
 
-      <main className="min-h-screen bg-black text-white overflow-x-hidden pt-16 ">
-        <div className="max-w-7xl mx-auto px-2 py-8">
+      <main className="min-h-screen bg-black text-white overflow-x-hidden w-full">
+        <div className="mt-20 max-w-7xl mx-auto px-4 md:px-6">
           <motion.div
             className="mb-8"
             initial={{ x: -50, opacity: 0 }}
@@ -90,14 +90,14 @@ function Dashboard() {
           </motion.div>
 
           {loading ? (
-            <div className="flex justify-center items-center py-32">
+            <div className="flex justify-center items-center py-20 md:py-24">
               <div className="w-12 h-12 border-4 border-zinc-700 border-t-purple-500 rounded-full animate-spin"></div>
             </div>
           ) : websites.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-32 border border-dashed border-zinc-800 rounded-3xl">
+           <div className="w-full max-w-full box-border flex flex-col items-center justify-center py-20 md:py-24 border border-dashed border-zinc-800 rounded-3xl">
               <Globe size={70} className="text-zinc-600 mb-5" />
 
-              <h3 className="text-2xl font-semibold">
+              <h3 className="text-2xl font-semibold text-center">
                 No Websites Generated Yet
               </h3>
 
@@ -121,7 +121,6 @@ function Dashboard() {
                   className="bg-[#090909] border border-zinc-800 rounded-2xl overflow-hidden hover:border-purple-500 transition-all duration-300 hover:shadow-lg hover:shadow-purple-900/20"
                   initial={{ y: 50, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
-                  // transition={{ delay: `${(index) * 0.1}`, type: "tween" ,duration:"0.3"}}
                 >
                   <div className="h-44 bg-white overflow-hidden relative border-b border-zinc-800">
                     <div

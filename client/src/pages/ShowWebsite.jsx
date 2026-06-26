@@ -23,10 +23,7 @@ function ShowWebsite() {
   const [messages, setMessages] = useState([
     { role: "system", text: "Hi 👋, describe your website idea." },
   ]);
-
   let { id } = useParams();
-  console.log(id);
-
   const [code, setCode] = useState("");
   const [title, setTitle] = useState("AI Generated Website");
   const [website, setWebsite] = useState(null);
@@ -34,15 +31,17 @@ function ShowWebsite() {
   const [isFull, setIsFull] = useState(false);
   const [showEditor, setShowEditor] = useState(false);
   const [showChat, setShowChat] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   // Functions and States
   const handleSend = () => {
     if (!input.trim()) return;
-    setInput("");
+    updateWebsite(website?._id);
   };
 
   const fetchWebsite = async () => {
     try {
+      setLoading(true);
       const response = await axios.get(
         `${import.meta.env.VITE_BACKEND_URL}/api/web/getsitebyid/${id}`,
         { withCredentials: true },
@@ -59,9 +58,16 @@ function ShowWebsite() {
         text: msg.text || msg.context || "",
       }));
 
-      setMessages((prev) => [...prev, ...formattedChat]);
+      // setMessages((prev) => [...prev, ...formattedChat]);
+      setMessages([
+        { role: "system", text: "Hi 👋, describe your website idea." },
+        ...formattedChat,
+      ]);
     } catch (error) {
       console.log(error);
+      toast.error(error?.response?.data?.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -81,6 +87,54 @@ function ShowWebsite() {
     }
   };
 
+  // http://localhost:3000/api/web/update/6a3cb62db7e2909e56f526fb
+  const updateWebsite = async (id) => {
+    const userMessage = input.trim();
+
+    if (!userMessage || loading) return;
+
+    try {
+      setLoading(true);
+
+      const response = await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL}/api/web/update/${id}`,
+        {
+          prompt: userMessage,
+        },
+        {
+          withCredentials: true,
+        },
+      );
+
+      const aiMessage =
+        response.data.website.chat.filter((m) => m.role === "ai").at(-1)
+          ?.context || "Website updated successfully.";
+
+      setInput("");
+
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "user",
+          text: userMessage,
+        },
+        {
+          role: "ai",
+          text: aiMessage,
+        },
+      ]);
+
+      setCode(response.data.website.code);
+      setWebsite(response.data.website);
+      setTitle(response.data.website.title);
+    } catch (error) {
+      console.log(error);
+      toast.error(error?.response?.data?.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchWebsite();
   }, [refresh]);
@@ -92,9 +146,21 @@ function ShowWebsite() {
         <div className="fixed inset-0 z-50 flex flex-col bg-black">
           {/* TOP BAR */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-gray-900">
-            <h1 className="font-semibold">{title}</h1>
+            <motion.h1
+              className="font-semibold flex gap-2 items-center"
+              initial={{ x: -50, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              <Globe size={18} /> {title}
+            </motion.h1>
 
-            <div className="flex gap-2">
+            <motion.div
+              className="flex gap-2"
+              initial={{ x: 50, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ duration: 0.5 }}
+            >
               <button
                 onClick={() => setShowEditor(true)}
                 className="px-3 py-1 bg-gray-900 rounded"
@@ -108,7 +174,7 @@ function ShowWebsite() {
               >
                 Exit
               </button>
-            </div>
+            </motion.div>
           </div>
 
           {/* PREVIEW AREA */}
@@ -167,7 +233,6 @@ function ShowWebsite() {
         /* Normal Mode */
         <div className="flex h-screen w-full ">
           {/* LEFT CHAT */}
-          {/* ${showChat ? "w-full md:w-[25%]" : "hidden md:w-[25%] md:flex"} */}
           <AnimatePresence>
             {showChat && (
               <motion.div
@@ -203,22 +268,63 @@ function ShowWebsite() {
                       {msg.text}
                     </div>
                   ))}
+                  {loading && (
+                    <div className="mr-auto bg-gray-800 px-4 py-3 rounded-lg w-fit">
+                      <div className="flex items-center gap-1">
+                        <motion.div
+                          className="w-2 h-2 bg-white rounded-full"
+                          animate={{ y: [0, -5, 0] }}
+                          transition={{
+                            duration: 0.5,
+                            repeat: Infinity,
+                            delay: 0,
+                          }}
+                        />
+
+                        <motion.div
+                          className="w-2 h-2 bg-white rounded-full"
+                          animate={{ y: [0, -5, 0] }}
+                          transition={{
+                            duration: 0.5,
+                            repeat: Infinity,
+                            delay: 0.15,
+                          }}
+                        />
+
+                        <motion.div
+                          className="w-2 h-2 bg-white rounded-full"
+                          animate={{ y: [0, -5, 0] }}
+                          transition={{
+                            duration: 0.5,
+                            repeat: Infinity,
+                            delay: 0.3,
+                          }}
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* INPUT */}
                 <div className="p-3 border-t border-gray-900 flex gap-2">
                   <input
                     value={input}
+                    disabled={loading}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={(e) => e.key === "Enter" && handleSend()}
                     placeholder="Describe your website..."
-                    className="flex-1 px-3 py-2 rounded-md bg-black border border-gray-800 outline-none text-sm"
+                    className="flex-1 px-3 py-2 rounded-md bg-black border border-gray-800 outline-none text-sm disabled:opacity-50"
                   />
                   <button
-                    onClick={handleSend}
-                    className="bg-blue-600 px-3 py-2 rounded-md"
+                    disabled={loading}
+                    onClick={() => updateWebsite(website?._id)}
+                    className="bg-blue-600 px-3 py-2 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <Send size={16} />
+                    {loading ? (
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <Send size={16} />
+                    )}
                   </button>
                 </div>
               </motion.div>
@@ -249,7 +355,7 @@ function ShowWebsite() {
                 className="flex gap-2 flex-wrap"
                 initial={{ x: 50, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                transition={{ delay: 0.5 }}
+                transition={{ delay: 0.5, duration: 0.5 }}
               >
                 <button
                   className="md:hidden px-3 py-1 bg-gray-900 rounded flex justify-center items-center gap-2"
