@@ -4,16 +4,14 @@ import { getAuth } from "firebase/auth";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: "gensite-f76fe.firebaseapp.com",
-  projectId: "gensite-f76fe",
-  storageBucket: "gensite-f76fe.firebasestorage.app",
-  messagingSenderId: "870983918375",
-  appId: "1:870983918375:web:0c04fd74aa20efe7e2bf02",
+  authDomain: "gensite-72be3.firebaseapp.com",
+  projectId: "gensite-72be3",
+  storageBucket: "gensite-72be3.firebasestorage.app",
+  messagingSenderId: "667010145505",
+  appId: "1:667010145505:web:a8d94e41dc62c322362ba0"
 };
-
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
